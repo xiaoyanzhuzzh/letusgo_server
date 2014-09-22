@@ -80,11 +80,13 @@ router.delete('/:id', function(req, res) {
 
     var newItems = JSON.parse(items);
     var result = _.find(newItems, function(item) {
+
       return item.id.toString() === id;
     });
     _.remove(newItems, result);
 
     client.set('items', JSON.stringify(newItems), function(err, data) {
+
       res.send(data);
     });
   });
@@ -103,7 +105,7 @@ router.put('/:id', function(req, res) {
       if(newItem.id === newItems[i].id) {
 
         newItems[i] = {
-          id: newItem.id,
+          id: id,
           barcode: newItem.barcode,
           name: newItem.name,
           unit: newItem.unit,
@@ -112,9 +114,8 @@ router.put('/:id', function(req, res) {
         };
       }
     }
-    console.log(newItems);
+
     client.set('items', JSON.stringify(newItems), function(err, obj) {
-      console.log(obj);
       res.send(obj);
     });
   });
