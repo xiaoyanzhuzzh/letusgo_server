@@ -66,7 +66,7 @@ router.post('/:id', function(req, res) {
 
       newItems.push(newItem);
     }
-    console.log(newItems);
+
     client.set('items', JSON.stringify(newItems), function(err, data) {
       res.send(data);
     });
