@@ -55,6 +55,86 @@ router.post('/', function(req, res) {
   });
 });
 
+router.put('/', function(req, res) {
 
+  var newCartItem = req.body.cartItem;
+
+  client.get('cartItems', function(err, data) {
+
+    var cartItems = JSON.parse(data);
+    var index = _.findIndex(cartItems, {'item': newCartItem.item});
+    console.log(index+'--------------');
+    console.log(cartItems[index].number);
+    cartItems[index].number = parseInt(newCartItem.number);
+    client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
+
+      res.send(data);
+    });
+  });
+});
+
+router.post('/:id', function(req, res) {
+
+  var id = req.params.id;
+
+  client.get('cartItems', function(err, data) {
+
+    var cartItems = JSON.parse(data);
+    var index = _.findIndex(cartItems, function(cartItem) {
+
+      return cartItem.item.id.toString() === id;
+    });
+
+    cartItems[index].number += 1;
+    client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
+
+      res.send(data);
+    });
+  });
+});
+
+router.put('/:id', function(req, res) {
+
+  var id = req.params.id;
+
+  client.get('cartItems', function(err, data) {
+
+    var cartItems = JSON.parse(data);
+    var index = _.findIndex(cartItems, function(cartItem) {
+
+      return cartItem.item.id.toString() === id;
+    });
+
+    if(cartItems[index].number > 1) {
+
+      cartItems[index].number -= 1;
+    }
+    client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
+
+      res.send(data);
+    });
+  });
+});
+
+
+router.delete('/:id', function(req, res) {
+
+  var id = req.params.id;
+
+  client.get('cartItems', function(err, data) {
+
+    var cartItems = JSON.parse(data);
+    var cartItem = _.find(cartItems, function(cartItem) {
+
+      return cartItem.item.id.toString() === id;
+    });
+
+    _.remove(cartItems, cartItem);
+    client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
+
+      res.send(data);
+    });
+  });
+});
 
 module.exports = router;
