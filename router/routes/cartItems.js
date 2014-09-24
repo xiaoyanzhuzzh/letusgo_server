@@ -62,15 +62,26 @@ router.put('/', function(req, res) {
   client.get('cartItems', function(err, data) {
 
     var cartItems = JSON.parse(data);
+
     var index = _.findIndex(cartItems, {'item': newCartItem.item});
-    console.log(index+'--------------');
-    console.log(cartItems[index].number);
     cartItems[index].number = parseInt(newCartItem.number);
+
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
 
       res.send(data);
     });
   });
+});
+
+router.delete('/', function(req, res) {
+
+  client.del('cartItems');
+  var cartItems = [];
+  client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
+
+    res.send(data);
+  });
+
 });
 
 router.post('/:id', function(req, res) {
