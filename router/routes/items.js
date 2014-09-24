@@ -25,14 +25,14 @@ router.get('/', function(req, res) {
 
 router.post('/', function (req, res) {
 
-client.get('items', function(err, data) {
+  client.get('items', function(err, data) {
 
-  var newItems = JSON.parse(data) || initItems;
-  client.set('items', JSON.stringify(newItems), function(err, data) {
+    var newItems = JSON.parse(data) || initItems;
+    client.set('items', JSON.stringify(newItems), function(err, data) {
 
-     res.send(data);
+       res.send(data);
+    });
   });
-});
 });
 
 router.get('/:id', function(req, res){
@@ -41,7 +41,6 @@ router.get('/:id', function(req, res){
   client.get('items', function(err, data) {
 
     var newItems = JSON.parse(data);
-    console.log(newItems);
     var result = _.find(newItems, function(item){
       return item.id.toString() === id;
     });
@@ -68,6 +67,7 @@ router.post('/:id', function(req, res) {
     }
 
     client.set('items', JSON.stringify(newItems), function(err, data) {
+      
       res.send(data);
     });
   });

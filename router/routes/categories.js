@@ -89,9 +89,8 @@ router.put('/:id', function(req, res) {
         };
       }
     }
-    console.log(newCategories);
     client.set('categories', JSON.stringify(newCategories), function(err, data) {
-      console.log(data);
+
       res.send(data);
     });
   });
