@@ -35,19 +35,15 @@ router.post('/', function(req, res) {
 
 router.post('/:id', function(req, res) {
 
-  var id = req.params.id;
   var newCategory = req.body.category;
 
   client.get('categories', function(err, data) {
 
     var newCategories = JSON.parse(data);
-    var ids = _.pluck(newCategories, 'id');
-    if(!_.contains(ids, id)){
 
-      newCategories.push(newCategory);
-    }
-    console.log(newCategories);
+    newCategories.push(newCategory);
     client.set('categories', JSON.stringify(newCategories), function(err, data) {
+
       res.send(data);
     });
   });
