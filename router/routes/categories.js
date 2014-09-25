@@ -16,7 +16,7 @@ var categories = [
 client.set('categories',JSON.stringify(categories));
 
 router.get('/', function(req, res) {
-  //TODO: Need to implement.
+
   client.get('categories', function(err, obj){
     res.send(obj);
   });

@@ -35,6 +35,7 @@ function getCartItems(item, cartItems) {
 router.get('/', function (req, res) {
 
   client.get('cartItems', function (err, obj) {
+
     res.send(obj);
   });
 });
