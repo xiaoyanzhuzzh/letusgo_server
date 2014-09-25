@@ -17,7 +17,7 @@ var initItems = [
 client.set('items', JSON.stringify(initItems));
 
 router.get('/', function(req, res) {
-  //TODO: Need to implement.
+
   client.get('items', function(err, obj){
     res.send(obj);
   });
