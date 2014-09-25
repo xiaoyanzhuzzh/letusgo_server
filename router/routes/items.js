@@ -55,7 +55,6 @@ router.get('/:id', function(req, res){
 
 router.post('/:id', function(req, res) {
 
-  var id = req.params.id;
   var newItem = req.body.item;
 
   client.get('items', function(err, data) {
