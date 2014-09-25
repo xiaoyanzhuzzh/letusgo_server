@@ -60,14 +60,10 @@ router.post('/:id', function(req, res) {
 
   client.get('items', function(err, data) {
     var newItems = JSON.parse(data);
-    var ids = _.pluck(newItems, 'id');
-    if(!_.contains(ids, id)){
 
-      newItems.push(newItem);
-    }
-
+    newItems.push(newItem);
     client.set('items', JSON.stringify(newItems), function(err, data) {
-      
+
       res.send(data);
     });
   });
