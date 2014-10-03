@@ -16,7 +16,6 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res) {
-  console.log(';;;;;;;;;;;;');
   client.get('categories', function(err, data) {
 
     var newCategories = JSON.parse(data);

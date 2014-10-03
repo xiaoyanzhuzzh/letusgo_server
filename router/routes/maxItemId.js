@@ -20,7 +20,7 @@ router.post('/', function (req, res) {
     var newItems = JSON.parse(data);
     var ids = _.pluck(newItems, 'id');
     var newId = _.max(ids);
-    
+
     client.set('itemId', newId, function(err, data) {
 
       res.send(data);
