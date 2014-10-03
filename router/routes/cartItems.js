@@ -74,17 +74,6 @@ router.put('/', function(req, res) {
   });
 });
 
-router.delete('/', function(req, res) {
-
-  client.del('cartItems');
-
-  var cartItems = [];
-  client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
-
-    res.send(data);
-  });
-});
-
 router.post('/:id', function(req, res) {
 
   var id = req.params.id;
