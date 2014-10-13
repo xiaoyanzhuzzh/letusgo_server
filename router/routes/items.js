@@ -14,6 +14,14 @@ var initItems = [
   {id: 4, barcode:'ITEM000004', name:'电池', unit: '个', price:2.00, category:'生活用品'},
   {id: 5,barcode:'ITEM000005', name:'方便面', unit:'袋',price: 4.50, category:'零食'}
 ];
+
+function getLastItemId(items) {
+  var ids = _.pluck(items, 'id');
+  var id = _.max(ids);
+
+  return id;
+}
+
 client.set('items', JSON.stringify(initItems));
 
 router.get('/', function(req, res) {
@@ -35,7 +43,7 @@ router.post('/', function (req, res) {
   });
 });
 
-router.get('/:id', function(req, res){
+router.get('/:id', function(req, res) {
 
   var id = req.params.id;
   client.get('items', function(err, data) {
@@ -59,6 +67,7 @@ router.post('/:id', function(req, res) {
 
   client.get('items', function(err, data) {
     var newItems = JSON.parse(data);
+    newItem.id = getLastItemId(newItems) + 1;
 
     newItems.push(newItem);
     client.set('items', JSON.stringify(newItems), function(err, data) {
