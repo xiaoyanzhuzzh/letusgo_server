@@ -13,6 +13,13 @@ var categories = [
     {id: 3, name: '生活用品'}
   ];
 
+function getLastCategoryId(categories) {
+  var ids = _.pluck(categories, 'id');
+  var id = _.max(ids);
+
+  return id;
+}
+
 client.set('categories',JSON.stringify(categories));
 
 router.get('/', function(req, res) {
@@ -40,6 +47,7 @@ router.post('/:id', function(req, res) {
   client.get('categories', function(err, data) {
 
     var newCategories = JSON.parse(data);
+    newCategory.id = getLastCategoryId(newCategories) + 1;
 
     newCategories.push(newCategory);
     client.set('categories', JSON.stringify(newCategories), function(err, data) {
