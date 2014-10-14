@@ -7,12 +7,10 @@ var redis = require('redis');
 var client = redis.createClient();
 
 function isExistInCart(id, cartItems){
-
   var item;
   for (var i = 0; i < cartItems.length; i++){
 
     if (id === cartItems[i].item.id){
-
       item = cartItems[i];
     }
   }
@@ -20,14 +18,12 @@ function isExistInCart(id, cartItems){
 }
 
 function getCartItems(item, cartItems) {
-
   var cartItem = isExistInCart(item.id, cartItems);
-  if (cartItem) {
 
+  if (cartItem) {
     cartItem.number += 1;
   }
   else{
-
     cartItems.push({item: item, number: 1});
   }
 }
@@ -35,71 +31,59 @@ function getCartItems(item, cartItems) {
 router.get('/', function (req, res) {
 
   client.get('cartItems', function (err, obj) {
-
     res.send(obj);
   });
 });
 
 router.post('/', function(req, res) {
-
   var item = req.body.cartItem;
 
   client.get('cartItems', function(err, data) {
-
     var cartItems = JSON.parse(data) || [];
     getCartItems(item, cartItems);
 
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
-
       res.send(data);
     });
   });
 });
 
 router.put('/', function(req, res) {
-
   var newCartItem = req.body.cartItem;
 
   client.get('cartItems', function(err, data) {
-
     var cartItems = JSON.parse(data);
 
     var index = _.findIndex(cartItems, {'item': newCartItem.item});
     cartItems[index].number = parseInt(newCartItem.number);
 
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
-
       res.send(data);
     });
   });
 });
 
 router.post('/:id', function(req, res) {
-
   var id = req.params.id;
 
   client.get('cartItems', function(err, data) {
-
     var cartItems = JSON.parse(data);
-    var index = _.findIndex(cartItems, function(cartItem) {
 
+    var index = _.findIndex(cartItems, function(cartItem) {
       return cartItem.item.id.toString() === id;
     });
 
     cartItems[index].number += 1;
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
-
       res.send(data);
     });
   });
 });
 
 router.put('/:id', function(req, res) {
-
   var id = req.params.id;
 
   client.get('cartItems', function(err, data) {
-
     var cartItems = JSON.parse(data);
     var index = _.findIndex(cartItems, function(cartItem) {
 
@@ -107,22 +91,19 @@ router.put('/:id', function(req, res) {
     });
 
     if(cartItems[index].number > 1) {
-
       cartItems[index].number -= 1;
     }
-    client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
 
+    client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
       res.send(data);
     });
   });
 });
 
 router.delete('/:id', function(req, res) {
-
   var id = req.params.id;
 
   client.get('cartItems', function(err, data) {
-
     var cartItems = JSON.parse(data);
     var cartItem = _.find(cartItems, function(cartItem) {
 
@@ -131,7 +112,6 @@ router.delete('/:id', function(req, res) {
 
     _.remove(cartItems, cartItem);
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
-
       res.send(data);
     });
   });
