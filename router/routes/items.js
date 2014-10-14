@@ -58,11 +58,10 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function (req, res) {
-
   client.get('items', function(err, data) {
 
     var newItems = JSON.parse(data) || initItems;
-    
+
     client.set('items', JSON.stringify(newItems), function(err, data) {
        res.send(data);
     });
@@ -70,10 +69,9 @@ router.post('/', function (req, res) {
 });
 
 router.get('/:id', function(req, res) {
-
   var id = req.params.id;
-  client.get('items', function(err, data) {
 
+  client.get('items', function(err, data) {
     var newItems = JSON.parse(data);
 
     var result = findItemId(newItems, id);
@@ -86,7 +84,6 @@ router.get('/:id', function(req, res) {
 });
 
 router.post('/:id', function(req, res) {
-
   var newItem = req.body.item;
 
   client.get('items', function(err, data) {
@@ -102,8 +99,8 @@ router.post('/:id', function(req, res) {
 });
 
 router.delete('/:id', function(req, res) {
-
   var id = req.params.id;
+
   client.get('items', function(err, items) {
     var newItems = JSON.parse(items);
 
@@ -117,7 +114,6 @@ router.delete('/:id', function(req, res) {
 });
 
 router.put('/:id', function(req, res) {
-
   var newItem = req.body.item;
 
   client.get('items', function(err, items) {
