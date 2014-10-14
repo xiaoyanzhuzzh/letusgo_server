@@ -62,8 +62,8 @@ router.post('/', function (req, res) {
   client.get('items', function(err, data) {
 
     var newItems = JSON.parse(data) || initItems;
+    
     client.set('items', JSON.stringify(newItems), function(err, data) {
-
        res.send(data);
     });
   });
@@ -75,7 +75,7 @@ router.get('/:id', function(req, res) {
   client.get('items', function(err, data) {
 
     var newItems = JSON.parse(data);
-    
+
     var result = findItemId(newItems, id);
     if(result){
       res.send(result);
@@ -91,11 +91,11 @@ router.post('/:id', function(req, res) {
 
   client.get('items', function(err, data) {
     var newItems = JSON.parse(data);
+
     newItem.id = getLastItemId(newItems) + 1;
-
     newItems.push(newItem);
-    client.set('items', JSON.stringify(newItems), function(err, data) {
 
+    client.set('items', JSON.stringify(newItems), function(err, data) {
       res.send(data);
     });
   });
@@ -111,7 +111,6 @@ router.delete('/:id', function(req, res) {
     _.remove(newItems, result);
 
     client.set('items', JSON.stringify(newItems), function(err, data) {
-
       res.send(data);
     });
   });
