@@ -103,32 +103,50 @@ function findItemId(items, id) {
 
 router.put('/:id', function(req, res) {
 
-  var id = req.params.id;
   var newItem = req.body.item;
 
   client.get('items', function(err, items) {
 
     var newItems = JSON.parse(items);
+    newItems = modifyItem(newItems, newItem);
 
-    for(var i = 0; i < newItems.length; i++) {
-      if(newItem.id === newItems[i].id) {
-
-        newItems[i] = {
-          id: id,
-          barcode: newItem.barcode,
-          name: newItem.name,
-          unit: newItem.unit,
-          price: newItem.price,
-          category: newItem.category
-        };
-      }
-    }
+//    for(var i = 0; i < newItems.length; i++) {
+//      if(newItem.id === newItems[i].id) {
+//
+//        newItems[i] = {
+//          id: newItem.id,
+//          barcode: newItem.barcode,
+//          name: newItem.name,
+//          unit: newItem.unit,
+//          price: newItem.price,
+//          category: newItem.category
+//        };
+//      }
+//    }
 
     client.set('items', JSON.stringify(newItems), function(err, obj) {
       res.send(obj);
     });
   });
 });
+
+function modifyItem(items, newItem){
+  for(var i = 0; i < items.length; i++) {
+
+    if(newItem.id === items[i].id) {
+
+      items[i] = {
+        id: newItem.id,
+        barcode: newItem.barcode,
+        name: newItem.name,
+        unit: newItem.unit,
+        price: newItem.price,
+        category: newItem.category
+      };
+    }
+  }
+  return items;
+}
 
 module.exports = router;
 
