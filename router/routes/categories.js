@@ -43,7 +43,7 @@ function modifyCategory(categories, newCategory) {
 client.set('categories',JSON.stringify(categories));
 
 router.get('/', function(req, res) {
-  
+
   client.get('categories', function(err, obj){
     res.send(obj);
   });
