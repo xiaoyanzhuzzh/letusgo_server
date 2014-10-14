@@ -20,6 +20,13 @@ function getLastCategoryId(categories) {
   return id;
 }
 
+function findCategoryById(categories, id) {
+  return _.find(categories, function(category) {
+
+    return category.id.toString() === id;
+  });
+}
+
 client.set('categories',JSON.stringify(categories));
 
 router.get('/', function(req, res) {
@@ -41,7 +48,6 @@ router.post('/', function(req, res) {
 });
 
 router.post('/:id', function(req, res) {
-
   var newCategory = req.body.category;
 
   client.get('categories', function(err, data) {
@@ -58,19 +64,15 @@ router.post('/:id', function(req, res) {
 });
 
 router.delete('/:id', function(req, res) {
-
   var id = req.params.id;
+
   client.get('categories', function(err, data) {
-
     var categories = JSON.parse(data);
-    var result = _.find(categories, function(category) {
 
-      return category.id.toString() === id;
-    });
+    var result = findCategoryById(categories, id);
     _.remove(categories, result);
 
     client.set('categories', JSON.stringify(categories), function(err, data) {
-
       res.send(data);
     })
   });
