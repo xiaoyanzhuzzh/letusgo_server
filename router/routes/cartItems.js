@@ -28,6 +28,38 @@ function getCartItems(item, cartItems) {
   }
 }
 
+function modifyCartItemNumber(cartItems, newCartItem) {
+
+  var index = _.findIndex(cartItems, {'item': newCartItem.item});
+  cartItems[index].number = parseInt(newCartItem.number);
+}
+
+function addCartItemNumber(cartItems, id) {
+  var index = _.findIndex(cartItems, function(cartItem) {
+    return cartItem.item.id.toString() === id;
+  });
+
+  cartItems[index].number += 1;
+}
+
+function deleteCartItemNumber(cartItems, id) {
+  var index = _.findIndex(cartItems, function(cartItem) {
+    return cartItem.item.id.toString() === id;
+  });
+
+  if(cartItems[index].number > 1) {
+    cartItems[index].number -= 1;
+  }
+}
+
+function deleteCartItem(cartItems, id) {
+  var cartItem = _.find(cartItems, function(cartItem) {
+    return cartItem.item.id.toString() === id;
+  });
+
+  _.remove(cartItems, cartItem);
+}
+
 router.get('/', function (req, res) {
 
   client.get('cartItems', function (err, obj) {
@@ -61,12 +93,6 @@ router.put('/', function(req, res) {
   });
 });
 
-function modifyCartItemNumber(cartItems, newCartItem) {
-
-  var index = _.findIndex(cartItems, {'item': newCartItem.item});
-  cartItems[index].number = parseInt(newCartItem.number);
-}
-
 router.post('/:id', function(req, res) {
   var id = req.params.id;
 
@@ -79,14 +105,6 @@ router.post('/:id', function(req, res) {
     });
   });
 });
-
-function addCartItemNumber(cartItems, id) {
-  var index = _.findIndex(cartItems, function(cartItem) {
-    return cartItem.item.id.toString() === id;
-  });
-
-  cartItems[index].number += 1;
-}
 
 router.put('/:id', function(req, res) {
   var id = req.params.id;
@@ -101,16 +119,6 @@ router.put('/:id', function(req, res) {
   });
 });
 
-function deleteCartItemNumber(cartItems, id) {
-  var index = _.findIndex(cartItems, function(cartItem) {
-    return cartItem.item.id.toString() === id;
-  });
-
-  if(cartItems[index].number > 1) {
-    cartItems[index].number -= 1;
-  }
-}
-
 router.delete('/:id', function(req, res) {
   var id = req.params.id;
 
@@ -123,13 +131,5 @@ router.delete('/:id', function(req, res) {
     });
   });
 });
-
-function deleteCartItem(cartItems, id) {
-  var cartItem = _.find(cartItems, function(cartItem) {
-    return cartItem.item.id.toString() === id;
-  });
-
-  _.remove(cartItems, cartItem);
-}
 
 module.exports = router;
