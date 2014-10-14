@@ -53,7 +53,7 @@ router.put('/', function(req, res) {
 
   client.get('cartItems', function(err, data) {
     var cartItems = JSON.parse(data);
-    cartItems = modifyCartItemNumber(cartItems, newCartItem);
+    modifyCartItemNumber(cartItems, newCartItem);
 
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
       res.send(data);
@@ -62,10 +62,9 @@ router.put('/', function(req, res) {
 });
 
 function modifyCartItemNumber(cartItems, newCartItem) {
+  
   var index = _.findIndex(cartItems, {'item': newCartItem.item});
   cartItems[index].number = parseInt(newCartItem.number);
-
-  return cartItems;
 }
 
 router.post('/:id', function(req, res) {
@@ -73,37 +72,51 @@ router.post('/:id', function(req, res) {
 
   client.get('cartItems', function(err, data) {
     var cartItems = JSON.parse(data);
+    addCartItemNumber(cartItems, id);
 
-    var index = _.findIndex(cartItems, function(cartItem) {
-      return cartItem.item.id.toString() === id;
-    });
-
-    cartItems[index].number += 1;
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
       res.send(data);
     });
   });
 });
+
+function addCartItemNumber(cartItems, id) {
+  var index = _.findIndex(cartItems, function(cartItem) {
+    return cartItem.item.id.toString() === id;
+  });
+
+  cartItems[index].number += 1;
+}
 
 router.put('/:id', function(req, res) {
   var id = req.params.id;
 
   client.get('cartItems', function(err, data) {
     var cartItems = JSON.parse(data);
-    var index = _.findIndex(cartItems, function(cartItem) {
-
-      return cartItem.item.id.toString() === id;
-    });
-
-    if(cartItems[index].number > 1) {
-      cartItems[index].number -= 1;
-    }
-
+//    var index = _.findIndex(cartItems, function(cartItem) {
+//
+//      return cartItem.item.id.toString() === id;
+//    });
+//
+//    if(cartItems[index].number > 1) {
+//      cartItems[index].number -= 1;
+//    }
+    deleteCartItemNumber(cartItems, id);
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
       res.send(data);
     });
   });
 });
+
+function deleteCartItemNumber(cartItems, id) {
+  var index = _.findIndex(cartItems, function(cartItem) {
+    return cartItem.item.id.toString() === id;
+  });
+
+  if(cartItems[index].number > 1) {
+    cartItems[index].number -= 1;
+  }
+}
 
 router.delete('/:id', function(req, res) {
   var id = req.params.id;
