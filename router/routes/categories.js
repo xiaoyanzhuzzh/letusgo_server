@@ -27,10 +27,23 @@ function findCategoryById(categories, id) {
   });
 }
 
+function modifyCategory(categories, newCategory) {
+  for(var i = 0; i < categories.length; i++) {
+    if(newCategory.id === categories[i].id) {
+
+      categories[i] = {
+        id: id,
+        name: newCategory.name
+      };
+    }
+  }
+  return categories;
+}
+
 client.set('categories',JSON.stringify(categories));
 
 router.get('/', function(req, res) {
-
+  
   client.get('categories', function(err, obj){
     res.send(obj);
   });
@@ -38,7 +51,6 @@ router.get('/', function(req, res) {
 
 router.post('/', function(req, res) {
   client.get('categories', function(err, data) {
-
     var categories = JSON.parse(data);
     client.set('categories', JSON.stringify(categories), function (err, data) {
 
@@ -51,7 +63,6 @@ router.post('/:id', function(req, res) {
   var newCategory = req.body.category;
 
   client.get('categories', function(err, data) {
-
     var newCategories = JSON.parse(data);
     newCategory.id = getLastCategoryId(newCategories) + 1;
 
@@ -79,22 +90,12 @@ router.delete('/:id', function(req, res) {
 });
 
 router.put('/:id', function(req, res) {
-
-  var id = req.params.id;
   var newCategory = req.body.category;
+
   client.get('categories', function(err, data) {
-
     var newCategories = JSON.parse(data);
+    newCategories = modifyCategory(newCategories, newCategory);
 
-    for(var i = 0; i < newCategories.length; i++) {
-      if(newCategory.id === newCategories[i].id) {
-
-        newCategories[i] = {
-          id: id,
-          name: newCategory.name
-        };
-      }
-    }
     client.set('categories', JSON.stringify(newCategories), function(err, data) {
 
       res.send(data);
