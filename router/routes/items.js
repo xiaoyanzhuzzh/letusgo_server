@@ -22,6 +22,32 @@ function getLastItemId(items) {
   return id;
 }
 
+function findItemId(items, id) {
+
+  return _.find(items, function(item) {
+
+    return item.id.toString() === id;
+  });
+}
+
+function modifyItem(items, newItem){
+  for(var i = 0; i < items.length; i++) {
+
+    if(newItem.id === items[i].id) {
+
+      items[i] = {
+        id: newItem.id,
+        barcode: newItem.barcode,
+        name: newItem.name,
+        unit: newItem.unit,
+        price: newItem.price,
+        category: newItem.category
+      };
+    }
+  }
+  return items;
+}
+
 client.set('items', JSON.stringify(initItems));
 
 router.get('/', function(req, res) {
@@ -49,10 +75,8 @@ router.get('/:id', function(req, res) {
   client.get('items', function(err, data) {
 
     var newItems = JSON.parse(data);
-    var result = _.find(newItems, function(item){
-      return item.id.toString() === id;
-    });
-
+    
+    var result = findItemId(newItems, id);
     if(result){
       res.send(result);
     } else{
@@ -93,14 +117,6 @@ router.delete('/:id', function(req, res) {
   });
 });
 
-function findItemId(items, id) {
-
-  return _.find(items, function(item) {
-
-    return item.id.toString() === id;
-  });
-}
-
 router.put('/:id', function(req, res) {
 
   var newItem = req.body.item;
@@ -110,43 +126,13 @@ router.put('/:id', function(req, res) {
     var newItems = JSON.parse(items);
     newItems = modifyItem(newItems, newItem);
 
-//    for(var i = 0; i < newItems.length; i++) {
-//      if(newItem.id === newItems[i].id) {
-//
-//        newItems[i] = {
-//          id: newItem.id,
-//          barcode: newItem.barcode,
-//          name: newItem.name,
-//          unit: newItem.unit,
-//          price: newItem.price,
-//          category: newItem.category
-//        };
-//      }
-//    }
-
     client.set('items', JSON.stringify(newItems), function(err, obj) {
       res.send(obj);
     });
   });
 });
 
-function modifyItem(items, newItem){
-  for(var i = 0; i < items.length; i++) {
 
-    if(newItem.id === items[i].id) {
-
-      items[i] = {
-        id: newItem.id,
-        barcode: newItem.barcode,
-        name: newItem.name,
-        unit: newItem.unit,
-        price: newItem.price,
-        category: newItem.category
-      };
-    }
-  }
-  return items;
-}
 
 module.exports = router;
 
