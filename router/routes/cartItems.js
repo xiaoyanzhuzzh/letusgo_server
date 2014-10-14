@@ -53,15 +53,20 @@ router.put('/', function(req, res) {
 
   client.get('cartItems', function(err, data) {
     var cartItems = JSON.parse(data);
-
-    var index = _.findIndex(cartItems, {'item': newCartItem.item});
-    cartItems[index].number = parseInt(newCartItem.number);
+    cartItems = modifyCartItemNumber(cartItems, newCartItem);
 
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
       res.send(data);
     });
   });
 });
+
+function modifyCartItemNumber(cartItems, newCartItem) {
+  var index = _.findIndex(cartItems, {'item': newCartItem.item});
+  cartItems[index].number = parseInt(newCartItem.number);
+
+  return cartItems;
+}
 
 router.post('/:id', function(req, res) {
   var id = req.params.id;
