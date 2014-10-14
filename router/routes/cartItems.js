@@ -62,7 +62,7 @@ router.put('/', function(req, res) {
 });
 
 function modifyCartItemNumber(cartItems, newCartItem) {
-  
+
   var index = _.findIndex(cartItems, {'item': newCartItem.item});
   cartItems[index].number = parseInt(newCartItem.number);
 }
@@ -93,14 +93,7 @@ router.put('/:id', function(req, res) {
 
   client.get('cartItems', function(err, data) {
     var cartItems = JSON.parse(data);
-//    var index = _.findIndex(cartItems, function(cartItem) {
-//
-//      return cartItem.item.id.toString() === id;
-//    });
-//
-//    if(cartItems[index].number > 1) {
-//      cartItems[index].number -= 1;
-//    }
+
     deleteCartItemNumber(cartItems, id);
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
       res.send(data);
@@ -123,16 +116,20 @@ router.delete('/:id', function(req, res) {
 
   client.get('cartItems', function(err, data) {
     var cartItems = JSON.parse(data);
-    var cartItem = _.find(cartItems, function(cartItem) {
+    deleteCartItem(cartItems, id);
 
-      return cartItem.item.id.toString() === id;
-    });
-
-    _.remove(cartItems, cartItem);
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
       res.send(data);
     });
   });
 });
+
+function deleteCartItem(cartItems, id) {
+  var cartItem = _.find(cartItems, function(cartItem) {
+    return cartItem.item.id.toString() === id;
+  });
+
+  _.remove(cartItems, cartItem);
+}
 
 module.exports = router;
