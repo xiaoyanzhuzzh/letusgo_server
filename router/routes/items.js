@@ -81,12 +81,9 @@ router.delete('/:id', function(req, res) {
 
   var id = req.params.id;
   client.get('items', function(err, items) {
-
     var newItems = JSON.parse(items);
-    var result = _.find(newItems, function(item) {
 
-      return item.id.toString() === id;
-    });
+    var result = findItemId(newItems, id);
     _.remove(newItems, result);
 
     client.set('items', JSON.stringify(newItems), function(err, data) {
@@ -95,6 +92,14 @@ router.delete('/:id', function(req, res) {
     });
   });
 });
+
+function findItemId(items, id) {
+
+  return _.find(items, function(item) {
+
+    return item.id.toString() === id;
+  });
+}
 
 router.put('/:id', function(req, res) {
 
