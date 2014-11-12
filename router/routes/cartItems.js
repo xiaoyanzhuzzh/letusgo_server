@@ -31,12 +31,14 @@ router.post('/', function(req, res) {
 
 
 router.put('/:id', function(req, res) {
+  var id = req.params.id;
   var newCartItem = req.body.cartItem;
+  console.log(newCartItem.number);
 
   client.get('cartItems', function(err, data) {
     var cartItems = JSON.parse(data);
     var index = _.findIndex(cartItems, function(cartItem) {
-      return cartItem.item.id.toString() === newCartItem.item.id;
+      return cartItem.item.id.toString() === id;
     });
 
     cartItems[index].number += newCartItem.number;
