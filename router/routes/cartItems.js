@@ -6,28 +6,6 @@ var _ = require('lodash');
 var redis = require('redis');
 var client = redis.createClient();
 
-function isExistInCart(id, cartItems){
-  var item;
-  for (var i = 0; i < cartItems.length; i++){
-
-    if (id === cartItems[i].item.id){
-      item = cartItems[i];
-    }
-  }
-  return item;
-}
-
-function getCartItems(item, cartItems) {
-  var cartItem = isExistInCart(item.id, cartItems);
-
-  if (cartItem) {
-    cartItem.number += 1;
-  }
-  else{
-    cartItems.push({item: item, number: 1});
-  }
-}
-
 function modifyCartItemNumber(cartItems, newCartItem) {
 
   var index = _.findIndex(cartItems, {'item': newCartItem.item});
@@ -68,15 +46,10 @@ router.get('/', function (req, res) {
 });
 
 router.post('/', function(req, res) {
-  var item = req.body.cartItem;
+  var newCartItems = req.body.cartItems;
 
-  client.get('cartItems', function(err, data) {
-    var cartItems = JSON.parse(data) || [];
-    getCartItems(item, cartItems);
-
-    client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
-      res.send(data);
-    });
+  client.set('cartItems', JSON.stringify(newCartItems), function(err, data) {
+    res.send(data);
   });
 });
 
