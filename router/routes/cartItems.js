@@ -6,30 +6,6 @@ var _ = require('lodash');
 var redis = require('redis');
 var client = redis.createClient();
 
-function modifyCartItemNumber(cartItems, newCartItem) {
-
-  var index = _.findIndex(cartItems, {'item': newCartItem.item});
-  cartItems[index].number = parseInt(newCartItem.number);
-}
-
-function addCartItemNumber(cartItems, id) {
-  var index = _.findIndex(cartItems, function(cartItem) {
-    return cartItem.item.id.toString() === id;
-  });
-
-  cartItems[index].number += 1;
-}
-
-function deleteCartItemNumber(cartItems, id) {
-  var index = _.findIndex(cartItems, function(cartItem) {
-    return cartItem.item.id.toString() === id;
-  });
-
-  if(cartItems[index].number > 1) {
-    cartItems[index].number -= 1;
-  }
-}
-
 function deleteCartItem(cartItems, id) {
   var cartItem = _.find(cartItems, function(cartItem) {
     return cartItem.item.id.toString() === id;
@@ -53,39 +29,17 @@ router.post('/', function(req, res) {
   });
 });
 
-router.put('/', function(req, res) {
+
+router.put('/:id', function(req, res) {
   var newCartItem = req.body.cartItem;
 
   client.get('cartItems', function(err, data) {
     var cartItems = JSON.parse(data);
-    modifyCartItemNumber(cartItems, newCartItem);
-
-    client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
-      res.send(data);
+    var index = _.findIndex(cartItems, function(cartItem) {
+      return cartItem.item.id.toString() === newCartItem.item.id;
     });
-  });
-});
 
-router.post('/:id', function(req, res) {
-  var id = req.params.id;
-
-  client.get('cartItems', function(err, data) {
-    var cartItems = JSON.parse(data);
-    addCartItemNumber(cartItems, id);
-
-    client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
-      res.send(data);
-    });
-  });
-});
-
-router.put('/:id', function(req, res) {
-  var id = req.params.id;
-
-  client.get('cartItems', function(err, data) {
-    var cartItems = JSON.parse(data);
-
-    deleteCartItemNumber(cartItems, id);
+    cartItems[index].number += newCartItem.number;
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
       res.send(data);
     });
