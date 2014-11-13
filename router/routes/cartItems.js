@@ -37,11 +37,15 @@ router.put('/:id', function(req, res) {
 
   client.get('cartItems', function(err, data) {
     var cartItems = JSON.parse(data);
-    var index = _.findIndex(cartItems, function(cartItem) {
+    var cartItem = _.find(cartItems, function(cartItem) {
       return cartItem.item.id.toString() === id;
     });
 
-    cartItems[index].number += newCartItem.number;
+    cartItem.number = newCartItem.number;
+    console.log(cartItem.number);
+    console.log(cartItems);
+
+
     client.set('cartItems', JSON.stringify(cartItems), function(err, data) {
       res.send(data);
     });
